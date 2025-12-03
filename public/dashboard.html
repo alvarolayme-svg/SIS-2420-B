@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - KKK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%),
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="90" cy="30" r="0.5" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            background-attachment: fixed;
+            min-height: 100vh;
+            padding: 20px;
+            color: #e0e0e0;
+        }
+
+        .container {
+            background: linear-gradient(145deg, #2a2a4e, #1e1e3f);
+            border-radius: 15px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 1px solid #3a3a5e;
+        }
+
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        header h1 {
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .btnCerrarSesion {
+            background: linear-gradient(145deg, #d32f2f, #b71c1c);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.9em;
+            max-width: 120px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btnCerrarSesion:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .btnCrear {
+            background: linear-gradient(145deg, #667eea, #5a67d8);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 30px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btnCrear:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .listaEncuestas {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .itemEncuesta {
+            background: linear-gradient(145deg, #3a3a5e, #2a2a4e);
+            border-radius: 12px;
+            padding: 25px;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            border: 1px solid #4a4a6e;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .itemEncuesta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+        }
+
+        .itemEncuesta:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+
+        .tituloEncuesta {
+            font-size: 1.3em;
+            color: #e0e0e0;
+            margin-bottom: 8px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .autorEncuesta {
+            color: #b0b0b0;
+            font-size: 0.9em;
+            font-style: italic;
+        }
+
+        .detallesEncuesta {
+            display: none;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid #4a4a6e;
+        }
+
+        .descripcionEncuesta {
+            margin-bottom: 20px;
+            color: #d0d0d0;
+            font-size: 1em;
+            line-height: 1.5;
+        }
+
+        .seccionVotacion {
+            margin-bottom: 25px;
+        }
+
+        .btnVotar {
+            background: linear-gradient(145deg, #4a90e2, #357abd);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 6px;
+            font-size: 0.9em;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btnVotar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .btnVotar.votado {
+            background: linear-gradient(145deg, #4caf50, #388e3c) !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+            border: 2px solid #81c784 !important;
+        }
+
+        .btnComentarios {
+            background: linear-gradient(145deg, #ff9800, #f57c00);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-left: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btnComentarios:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+        }
+
+        .seccionComentarios {
+            margin-top: 25px;
+            display: none;
+            background: rgba(58, 58, 94, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #4a4a6e;
+        }
+
+        .comentario {
+            background: linear-gradient(145deg, #4a4a6e, #3a3a5e);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #5a5a7e;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .autorComentario {
+            font-weight: bold;
+            color: #667eea;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .textoComentario {
+            margin-top: 6px;
+            color: #d0d0d0;
+        }
+
+        button {
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .welcome {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(145deg, #2a2a4e, #1e1e3f);
+            margin-bottom: 25px;
+            border-radius: 10px;
+            border: 1px solid #3a3a5e;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .welcome h2 {
+            color: #e0e0e0;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .welcome p {
+            color: #b0b0b0;
+            font-size: 1.1em;
+        }
+
+        .survey-icon {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            opacity: 0.7;
+        }
+
+        .entradaComentario {
+            width: 70%;
+            padding: 8px 12px;
+            border: 1px solid #5a5a7e;
+            border-radius: 6px;
+            background: rgba(74, 74, 110, 0.5);
+            color: #e0e0e0;
+            font-size: 0.9em;
+        }
+
+        .entradaComentario:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+        }
+
+        .btnEnviarComentario {
+            padding: 8px 15px;
+            background: linear-gradient(145deg, #667eea, #5a67d8);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        .btnEnviarComentario:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #2a2a4e, #1e1e3f);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #3a3a5e;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 600px;
+            box-shadow: 0 15px 50px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.1);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .btnCerrarModal {
+            color: #b0b0b0;
+            float: right;
+            font-size: 2em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btnCerrarModal:hover {
+            color: #e0e0e0;
+        }
+
+        .tituloModal {
+            color: #e0e0e0;
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .grupoFormulario {
+            margin-bottom: 15px;
+        }
+
+        .grupoFormulario label {
+            display: block;
+            color: #b0b0b0;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .grupoFormulario input,
+        .grupoFormulario textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #5a5a7e;
+            border-radius: 8px;
+            background: rgba(74, 74, 110, 0.5);
+            color: #e0e0e0;
+            font-size: 0.9em;
+            transition: all 0.3s ease;
+        }
+
+        .grupoFormulario input:focus,
+        .grupoFormulario textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .accionesModal {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            justify-content: flex-end;
+        }
+
+        .accionesModal button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btnGuardar {
+            background: linear-gradient(145deg, #4caf50, #388e3c);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btnGuardar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .btnCancelar {
+            background: linear-gradient(145deg, #d32f2f, #b71c1c);
+            color: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .btnCancelar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+        }
+
+        .btnEditar, .btnEliminar {
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            margin-right: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btnEditar {
+            background: linear-gradient(145deg, #667eea, #5a67d8);
+            color: white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .btnEditar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .btnEliminar {
+            background: linear-gradient(145deg, #d32f2f, #b71c1c);
+            color: white;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+        }
+
+        .btnEliminar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+
+        .accionesEncuesta {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔷CounterPoint</h1>
+            <button class="btnCerrarSesion" onclick="cerrarSesion()">Cerrar sesión</button>
+        </header>
+        
+        <div class="welcome">
+            <h2>Bienvenido a mi primera aplicación web UWU</h2>
+            <p>Selecciona una opción para continuar</p>
+        </div>
+        
+        <div class="content">
+            <button class="btnCrear" onclick="window.location.href='/encuestas.html'">Crear Encuesta</button>
+            <div id="listaEncuestas" class="listaEncuestas">
+                <!-- Surveys will be loaded here -->
+            </div>
+        </div>
+
+    <!-- Modal para editar encuesta -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="btnCerrarModal" onclick="cerrarModalEditar()">&times;</span>
+            <h2 class="tituloModal">Editar Encuesta</h2>
+            <div class="grupoFormulario">rio">
+                <label>Título</label>
+                <input type="text" id="tituloEditar" placeholder="Título de la encuesta">
+            </div>
+            <div class="grupoFormulario">
+                <label>Descripción</label>
+                <textarea id="descripcionEditar" placeholder="Descripción de la encuesta" rows="4"></textarea>
+            </div>
+            <div class="grupoFormulario">
+                <label>Opciones (separadas por coma)</label>
+                <input type="text" id="opcionesEditar" placeholder="Opción 1, Opción 2, Opción 3">
+            </div>
+            <div class="accionesModal">
+                <button class="btnCancelar" onclick="cerrarModalEditar()">Cancelar</button>
+                <button class="btnGuardar" onclick="guardarEncuestaEditada()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function cerrarSesion() {
+            try { localStorage.removeItem('userEmail'); } catch(e) {}
+            window.location.href = '/';
+        }
+
+        function cargarEncuestas() {
+            const container = document.getElementById('listaEncuestas');
+            container.innerHTML = 'Cargando encuestas...';
+
+            const email = localStorage.getItem('userEmail');
+            const url = email ? `/api/encuestas?usuario=${encodeURIComponent(email)}` : '/api/encuestas';
+
+            fetch(url)
+                .then(response => response.json())
+                .then(responseData => {
+                    const data = responseData.data || responseData || [];
+                    if (!Array.isArray(data)) {
+                        container.innerHTML = 'No hay encuestas disponibles';
+                        return;
+                    }
+                    let html = '';
+                    const colorSchemes = [
+                        { bg: 'linear-gradient(145deg, #3a3a5e, #2a2a4e)', accent: '#667eea', border: '#4a4a6e' },
+                        { bg: 'linear-gradient(145deg, #4a3a5e, #3a2a4e)', accent: '#764ba2', border: '#5a4a6e' },
+                        { bg: 'linear-gradient(145deg, #3a4a5e, #2a3a4e)', accent: '#f093fb', border: '#4a5a6e' },
+                        { bg: 'linear-gradient(145deg, #5e3a4a, #4e2a3a)', accent: '#f5576c', border: '#6e4a5a' },
+                        { bg: 'linear-gradient(145deg, #3a5e4a, #2a4e3a)', accent: '#4caf50', border: '#4a6e5a' },
+                        { bg: 'linear-gradient(145deg, #5e4a3a, #4e3a2a)', accent: '#ff9800', border: '#6e5a4a' }
+                    ];
+                    const imagenesSondeo = [
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=100&h=100&fit=crop&crop=center',
+                        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=100&fit=crop&crop=center',
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=100&h=100&fit=crop&crop=center',
+                        'https://images.unsplash.com/photo-1504868584819-f8e8b4b6d7e3?w=100&h=100&fit=crop&crop=center',
+                        'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=100&h=100&fit=crop&crop=center',
+                        'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=100&h=100&fit=crop&crop=center'
+                    ];
+                    data.forEach((e, index) => {
+                        const opcionVotada = e.userVotedOption;
+                        const esquemaColor = colorSchemes[index % colorSchemes.length];
+                        const urlImagen = imagenesSondeo[index % imagenesSondeo.length];
+                        const emailUsuario = localStorage.getItem('userEmail');
+                        const esCreador = emailUsuario === e.creador;
+                        html += `<div class="itemEncuesta" onclick="alternarDetallesEncuesta('${e._id}')" style="background: ${esquemaColor.bg}; border-color: ${esquemaColor.border};">
+                            <img class="survey-icon" src="${urlImagen}" alt="Survey icon" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2240%22 height=%2240%22 viewBox=%220 0 40 40%22><rect width=%2240%22 height=%2240%22 fill=%22%23667eea%22 rx=%228%22/><text x=%2220%22 y=%2225%22 text-anchor=%22middle%22 fill=%22white%22 font-size=%2216%22>📊</text></svg>'">
+                            <div class="tituloEncuesta">${escaparHtml(e.titulo)}</div>
+                            <div class="autorEncuesta">por ${escaparHtml(e.creador)}</div>
+                            <div class="detallesEncuesta" id="details-${e._id}">
+                                <div class="descripcionEncuesta">${escaparHtml(e.descripcion || 'Sin descripción')}</div>
+                                <div class="seccionVotacion">
+                                    ${e.opciones && e.opciones.length > 0 ? e.opciones.map((op, index) => {
+                                        const esVotado = opcionVotada === index;
+                                        return `<button class="btnVotar ${esVotado ? 'votado' : ''}" onclick="votar('${e._id}', ${index}, event)" style="background: linear-gradient(145deg, ${esquemaColor.accent}, ${esquemaColor.accent}dd);">👍 ${escaparHtml(op.texto)} (${op.votos || 0})</button>`;
+                                    }).join('') : '<p>Sin opciones para votar</p>'}
+                                </div>
+                                <button class="btnComentarios" onclick="alternarComentarios('${e._id}', event)">💬 Comentarios</button>
+                                ${esCreador ? `<div class="accionesEncuesta">
+                                    <button class="btnEditar" onclick="abrirModalEditar('${e._id}', event)">✏️ Editar</button>
+                                    <button class="btnEliminar" onclick="eliminarEncuesta('${e._id}', event)">🗑️ Eliminar</button>
+                                </div>` : ''}
+                                <div class="seccionComentarios" id="comments-${e._id}">
+                                    <div id="lista-comentarios-${e._id}"></div>
+                                    <div style="margin-top: 10px;">
+                                        <input type="text" id="nuevo-comentario-${e._id}" placeholder="Escribe un comentario..." class="entradaComentario" onclick="event.stopPropagation()">
+                                        <button class="btnEnviarComentario" onclick="event.stopPropagation(); agregarComentario('${e._id}')">Comentar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    container.innerHTML = 'Error al cargar las encuestas: ' + error.message;
+                });
+        }
+
+        function alternarDetallesEncuesta(id) {
+            const details = document.getElementById(`details-${id}`);
+            const isVisible = details.style.display === 'block';
+            details.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function votar(encuestaId, indiceOpcion, event) {
+            event.stopPropagation();
+            const email = localStorage.getItem('userEmail');
+ 
+
+            fetch(`/api/encuestas/${encuestaId}/votar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ opcionIndex: indiceOpcion, usuarioCorreo: email })
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    cargarEncuestas();
+                } else {
+                    alert(responseData.message || 'Error al votar');
+                }
+            })
+            .catch(error => {
+                alert('Error al votar: ' + error.message);
+            });
+        }
+
+        function alternarComentarios(id, event) {
+            event.stopPropagation();
+            const seccionComentarios = document.getElementById(`comments-${id}`);
+            const isVisible = seccionComentarios.style.display === 'block';
+            seccionComentarios.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                cargarComentarios(id);
+            }
+        }
+
+        function cargarComentarios(encuestaId) {
+            const container = document.getElementById(`lista-comentarios-${encuestaId}`);
+            container.innerHTML = 'Cargando comentarios...';
+
+            fetch(`/api/comentarios/encuesta/${encuestaId}`)
+                .then(response => response.json())
+                .then(responseData => {
+                    const data = responseData.data || [];
+                    if (!Array.isArray(data)) {
+                        container.innerHTML = 'No hay comentarios';
+                        return;
+                    }
+                    let html = '';
+                    data.forEach(c => {
+                        html += `<div class="comentario">
+                            <div class="autorComentario">${escaparHtml(c.usuario)}</div>
+                            <div class="textoComentario">${escaparHtml(c.contenido)}</div>
+                        </div>`;
+                    });
+                    container.innerHTML = html || 'No hay comentarios';
+                })
+                .catch(error => {
+                    container.innerHTML = 'Error al cargar comentarios: ' + error.message;
+                });
+        }
+
+        function agregarComentario(encuestaId) {
+            const input = document.getElementById(`nuevo-comentario-${encuestaId}`);
+            const texto = input.value.trim();
+            if (!texto) return;
+
+            const email = localStorage.getItem('userEmail');
+            if (!email) {
+                alert('Debes iniciar sesión para comentar');
+                return;
+            }
+
+            fetch('/api/comentarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ encuestaId: encuestaId, usuario: email, contenido: texto })
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    input.value = '';
+                    cargarComentarios(encuestaId);
+                } else {
+                    alert(responseData.message || 'Error al comentar');
+                }
+            })
+            .catch(error => {
+                alert('Error al comentar: ' + error.message);
+            });
+        }
+
+        function escaparHtml(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"').replace(/'/g, '&#39;');
+        }
+
+        let idEncuestaEditando = null;
+
+        function abrirModalEditar(encuestaId, event) {
+            event.stopPropagation();
+            idEncuestaEditando = encuestaId;
+            
+            fetch(`/api/encuestas/${encuestaId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const survey = data.data || data;
+                    document.getElementById('tituloEditar').value = survey.titulo || '';
+                    document.getElementById('descripcionEditar').value = survey.descripcion || '';
+                    document.getElementById('opcionesEditar').value = survey.opciones.map(op => op.texto).join(', ');
+                    
+                    const modal = document.getElementById('editModal');
+                    modal.style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Error al cargar la encuesta: ' + error.message);
+                });
+        }
+
+        function cerrarModalEditar() {
+            document.getElementById('editModal').style.display = 'none';
+            idEncuestaEditando = null;
+            document.getElementById('tituloEditar').value = '';
+            document.getElementById('descripcionEditar').value = '';
+            document.getElementById('opcionesEditar').value = '';
+        }
+
+        function guardarEncuestaEditada() {
+            if (!idEncuestaEditando) {
+                alert('Error: No hay encuesta seleccionada');
+                return;
+            }
+
+            const titulo = document.getElementById('tituloEditar').value.trim();
+            const descripcion = document.getElementById('descripcionEditar').value.trim();
+            const opcionesText = document.getElementById('opcionesEditar').value.trim();
+
+            if (!titulo || !descripcion || !opcionesText) {
+                alert('Por favor completa todos los campos');
+                return;
+            }
+
+            const opciones = opcionesText.split(',').map(op => ({
+                texto: op.trim(),
+                votos: 0
+            }));
+
+            fetch(`/api/encuestas/${idEncuestaEditando}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ titulo, descripcion, opciones })
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    alert('Encuesta actualizada correctamente');
+                    cerrarModalEditar();
+                    cargarEncuestas();
+                } else {
+                    alert(responseData.message || 'Error al actualizar la encuesta');
+                }
+            })
+            .catch(error => {
+                alert('Error al actualizar: ' + error.message);
+            });
+        }
+
+        function eliminarEncuesta(encuestaId, event) {
+            event.stopPropagation();
+            
+            if (!confirm('¿Estás seguro de que deseas eliminar esta encuesta?')) {
+                return;
+            }
+
+            fetch(`/api/encuestas/${encuestaId}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(responseData => {
+                if (responseData.success) {
+                    alert('Encuesta eliminada correctamente');
+                    cargarEncuestas();
+                } else {
+                    alert(responseData.message || 'Error al eliminar la encuesta');
+                }
+            })
+            .catch(error => {
+                alert('Error al eliminar: ' + error.message);
+            });
+        }
+
+        // Cerrar modal al hacer clic fuera de él
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                cerrarModalEditar();
+            }
+        }
+
+        const email = (() => { try { return localStorage.getItem('userEmail'); } catch(e) { return null; } })();
+        if (!email) {
+            window.location.href = '/';
+        } else {
+            cargarEncuestas();
+        }
+    </script>
+</body>
+</html>

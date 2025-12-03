@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Registrar -  </title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%),
+                  url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.03)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="10" cy="50" r="0.5" fill="rgba(255,255,255,0.02)"/><circle cx="90" cy="30" r="0.5" fill="rgba(255,255,255,0.02)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: #e0e0e0;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #2a2a4e, #1e1e3f);
+      border-radius: 15px;
+      box-shadow: 0 15px 50px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+      max-width: 480px;
+      width: 100%;
+      padding: 30px;
+      border: 1px solid #3a3a5e;
+    }
+
+    h1 {
+      color: #e0e0e0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+      margin-bottom: 15px;
+      font-size: 1.8em;
+    }
+
+    p {
+      color: #b0b0b0;
+      margin-bottom: 20px;
+      font-size: 1em;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #b0b0b0;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #5a5a7e;
+      border-radius: 8px;
+      background: rgba(74, 74, 110, 0.5);
+      color: #e0e0e0;
+      font-size: 0.9em;
+      transition: all 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 8px rgba(102, 126, 234, 0.3);
+    }
+
+    button {
+      background: linear-gradient(145deg, #667eea, #5a67d8);
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.9em;
+      width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
+
+    .response {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-left: 4px solid #667eea;
+      background: rgba(102, 126, 234, 0.1);
+      border-radius: 6px;
+      color: #e0e0e0;
+    }
+
+    .error {
+      border-left-color: #f44336;
+      background: rgba(244, 67, 54, 0.1);
+    }
+
+    .success {
+      border-left-color: #4caf50;
+      background: rgba(76, 175, 80, 0.1);
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    a button {
+      width: auto;
+      padding: 8px 16px;
+      font-size: 0.8em;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Crear cuenta</h1>
+    <p style="color:#555;margin-bottom:14px"></p>
+    <div class="form-group">
+      <label>Nombre</label>
+      <input id="nombre" type="text"  />
+    </div>
+    <div class="form-group">
+      <label>Correo</label>
+      <input id="correo" type="email" />
+    </div>
+    <div class="form-group">
+      <label>Contraseña</label>
+      <input id="contrasena" type="password" placeholder="" />
+    </div>
+    <button onclick="registrar()">Registrarme</button>
+
+    <div id="resp" class="response"></div>
+
+    <p style="margin-top:14px;font-size:0.9em;color:#666">¿Ya tienes cuenta? <a href="/login.html" style="text-decoration:none"><button style="padding:6px 12px;font-size:0.9em;">Inicia sesión</button></a></p>
+  </div>
+
+  <script>
+    const URL_API = '/api';
+    function escaparHtml(str){return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')}
+    function mostrar(element, datos, esError=false){
+      const el=document.getElementById(element);
+      el.classList.remove('error','success');
+      el.classList.add(esError? 'error':'success');
+      if(datos && typeof datos==='object'){
+        if(datos.message) el.innerHTML = escaparHtml(datos.message);
+        else if(datos.error) el.innerHTML = escaparHtml(datos.error);
+        else el.innerHTML = '<pre>'+escaparHtml(JSON.stringify(datos,null,2))+'</pre>';
+      } else el.innerHTML = escaparHtml(String(datos));
+      el.style.display='block';
+    }
+
+    async function registrar(){
+      const nombre = document.getElementById('nombre').value.trim();
+      const correo = document.getElementById('correo').value.trim();
+      const contrasena = document.getElementById('contrasena').value;
+      const resp = 'resp';
+      if(!nombre||!correo||!contrasena){mostrar(resp,{error:'Todos los campos son requeridos'},true);return}
+      try{
+        const r = await fetch(`${URL_API}/usuarios/registro`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nombre,correo,contraseña:contrasena})});
+        const data = await r.json();
+        mostrar(resp,data, !r.ok);
+        if(r.ok){
+          // limpiar formulario y redirigir al index mostrando notificación
+          document.getElementById('nombre').value='';document.getElementById('correo').value='';document.getElementById('contrasena').value='';
+          // redirigir con parámetro para mostrar notificación en index
+          setTimeout(()=>{ window.location.href = '/dashboard.html'; }, 800);
+        }
+      }catch(err){mostrar(resp,{error:err.message},true)}
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+{
+  "name": "consola",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "blessed": "^0.1.81",
+    "chalk": "^5.6.2",
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "inquirer": "^12.11.0",
+    "mongoose": "^8.18.3",
+    "readline-sync": "^1.4.10"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}

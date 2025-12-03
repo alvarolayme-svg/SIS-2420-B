@@ -1,0 +1,23 @@
+const express = require('express');
+const router = express.Router();
+const EncuestaController = require('../controllers/EncuestaController');
+const UsuarioController = require('../controllers/UsuarioController');
+const ComentarioController = require('../controllers/ComentarioController');
+const encuestaCtrl = new EncuestaController();
+const usuarioCtrl = new UsuarioController();
+const comentarioCtrl = new ComentarioController();
+router.post('/encuestas', (req, res) => encuestaCtrl.crearEncuesta(req, res));
+router.get('/encuestas', (req, res) => encuestaCtrl.obtenerEncuestas(req, res));
+router.get('/encuestas/:id', (req, res) => encuestaCtrl.obtenerEncuestaPorId(req, res));
+router.put('/encuestas/:id', (req, res) => encuestaCtrl.editarEncuesta(req, res));
+router.delete('/encuestas/:id', (req, res) => encuestaCtrl.eliminarEncuesta(req, res));
+router.post('/encuestas/:id/votar', (req, res) => encuestaCtrl.votarEncuesta(req, res));
+router.post('/usuarios/registro', (req, res) => usuarioCtrl.registro(req, res));
+router.post('/usuarios/login', (req, res) => usuarioCtrl.login(req, res));
+router.get('/usuarios/:correo', (req, res) => usuarioCtrl.obtenerPorCorreo(req, res));
+router.post('/comentarios', (req, res) => comentarioCtrl.crearComentario(req, res));
+router.get('/comentarios/encuesta/:encuestaId', (req, res) => comentarioCtrl.obtenerComentarios(req, res));
+router.put('/comentarios/:id', (req, res) => comentarioCtrl.actualizarComentario(req, res));
+router.delete('/comentarios/:id', (req, res) => comentarioCtrl.eliminarComentario(req, res));
+
+module.exports = router;
